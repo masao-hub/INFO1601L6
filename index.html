@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper" style="padding-left: 10px;">
+            <a href="#" class="brand-logo">Ajax Demo</a>
+        </div>
+    </nav>
+    <main class="row" style="padding: 40px">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Website</th>
+                </tr>
+            </thead>
+            <tbody id="result"></tbody>
+        </table>
+    </main>
+    <script>
+        async function getData(url, renderFun) {
+            try {
+                let response = await fetch(url);
+                let result = await response.json();
+                renderFun(result);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        function drawTable(records) {
+            let result = document.querySelector('#result');
+            let html = '';
+            for (let record of records) {
+                html += `<tr id="${record.id}">
+                    <td>${record.id}</td>
+                    <td>${record.name}</td>
+                    <td>${record.brewery_type}</td>
+                    <td><a href="#${record.id}" onClick="getData('https://api.openbrewerydb.org/breweries/${record.id}', drawDetails)">Details</a></td>
+                </tr>`;
+            }
+            result.innerHTML = html;
+        }
+
+        function drawDetails(record) {
+            // Function to draw details of a single record
+            console.log(record);
+        }
+
+        // Fetch and render data on page load
+        getData("https://api.openbrewerydb.org/breweries", drawTable);
+    </script>
+</body>
+</html>
